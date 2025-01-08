@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shardingjdbc5demo.mapper.BillItemMapper">
+    <update id="batchUpdate">
+        update bill_item set status = #{status} where id in
+        <foreach collection="billItems" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+        and bill_range >=  #{periodStart} and bill_range <![CDATA[<= ]]> #{periodEnd}
+        and bill_no = #{bill.billNo}
+        and is_delete = 0
+
+
+    </update>
+
+
+    <select id="getListData" resultType="com.example.shardingjdbc5demo.dto.StoreBillItemTotalResp">
+
+
+        select store_no,
+               count(store_no)    count,
+               sum(actual_amount) total_actual_amount,
+               sum(income_fee)    total_income_fee,
+               sum(subsidy_fee)   total_subsidy_fee,
+               sum(handling_fee)  total_handling_fee
+        from bill_item
+        where bill_no = #{billNo}
+          AND bill_range >= #{periodStart}
+          AND bill_range <![CDATA[<= ]]> #{periodEnd}
+          AND status = #{status}
+          AND is_delete = 0
+
+        group by store_no
+
+    </select>
+
+    <select id="getLimitId" resultType="long">
+        SELECT id
+        FROM bill_item
+        where bill_range >= #{periodStart}
+          and bill_range <![CDATA[<= ]]> #{periodEnd}
+          and bill_no = #{bill.billNo}
+          and status = #{status}
+          and is_delete = 0
+        ORDER BY id
+        LIMIT #{startPageSize}, 1
+
+
+
+    </select>
+
+    <select id="selectListGroupByPage" resultType="com.example.shardingjdbc5demo.dto.StoreBillItemTotalResp">
+        select temp.store_no store_no,
+               sum(temp.actual_amount) total_actual_amount,
+               sum(temp.income_fee)    total_income_fee,
+               sum(temp.subsidy_fee)   total_subsidy_fee,
+               sum(temp.handling_fee)  total_handling_fee
+        from (select store_no, actual_amount, income_fee, subsidy_fee, handling_fee
+              from bill_item
+              where bill_no = #{bill.billNo}
+                AND  bill_range >= #{periodStart}
+                AND bill_range <![CDATA[<= ]]> #{periodEnd}
+                AND status = #{status}
+                AND is_delete = 0
+                AND id >= #{limitId}
+              LIMIT #{pageSize}) temp
+        group by temp.store_no
+
+    </select>
+
+
+
+
+    <select id="getConfirmBill" resultType="com.example.shardingjdbc5demo.domain.BillItem">
+
+        select store_no, actual_amount
+        from bill_item
+        where bill_no = #{billNo}
+          AND bill_range = #{billRange}
+          AND status = #{status}
+          AND is_delete = 0
+          AND id >= (SELECT id
+                     FROM bill_item
+                     where bill_range = #{billRange}
+                       and bill_no = #{billNo}
+                       and status = #{status}
+                       and is_delete = 0
+                     ORDER BY id
+                     LIMIT #{startPageSize}, 1)
+        LIMIT #{pageSize}
+
+    </select>
+
+</mapper>
