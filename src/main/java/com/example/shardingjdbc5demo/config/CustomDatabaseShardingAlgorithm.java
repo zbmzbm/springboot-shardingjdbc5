@@ -21,6 +21,7 @@ public class CustomDatabaseShardingAlgorithm implements StandardShardingAlgorith
         Object dbName = properties.get("dbName");
         for (String each : availableTargetNames) {
             if (each.endsWith(String.valueOf(dbName+dbIndex))) {
+                log.info("选择的数据库是：{}",each);
                 return each;
             }
         }

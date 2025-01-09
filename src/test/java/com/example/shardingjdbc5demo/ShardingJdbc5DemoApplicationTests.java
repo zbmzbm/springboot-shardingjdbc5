@@ -44,7 +44,7 @@ class ShardingJdbc5DemoApplicationTests {
         List<BillItem> billItems=new ArrayList<BillItem>();
         for (int i = 0; i < 4; i++) {
             BillItem billItem=new BillItem();
-            billItem.setBillNo("661000"+i);
+            billItem.setBillNo("661002"+i);
             billItem.setBillRange("2024-06-01 00:00:00");
             billItem.setConfirmTime(new Date());
             billItem.setStatus(0);
@@ -56,13 +56,27 @@ class ShardingJdbc5DemoApplicationTests {
             billItems.add(billItem);
         }
         billItemService.saveBatch(billItems);
+        System.out.println(billItems);
     }
 
     @Test
+    @Transactional
     public void testSubBillItem() {
         SubBillItem subBillItem=new SubBillItem();
-        subBillItem.setDetailNo("620012012");
+        subBillItem.setDetailNo("620012010");
         subBillItemMapper.insert(subBillItem);
+        BillItem billItem=new BillItem();
+        billItem.setBillNo("620012010");
+        billItem.setBillRange("2024-06-01 00:00:00");
+        billItem.setConfirmTime(new Date());
+        billItem.setStatus(0);
+        billItem.setErrorStatus(0);
+        billItem.setIsDelete(0);
+        billItem.setTransactionId("1");
+        billItem.setTransactionType(0);
+        billItem.setChannelType(1L);
+        billItemMapper.insert(billItem);
+        //int a=10/0;
     }
 
     @Test

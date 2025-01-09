@@ -2,6 +2,7 @@ package com.example.shardingjdbc5demo.service;
 
 import com.example.shardingjdbc5demo.domain.Bill;
 import com.example.shardingjdbc5demo.domain.BillItem;
+import com.example.shardingjdbc5demo.domain.SubBillItem;
 import com.example.shardingjdbc5demo.mapper.BillItemMapper;
 import com.example.shardingjdbc5demo.mapper.BillMapper;
 import com.example.shardingjdbc5demo.mapper.SubBillItemMapper;
@@ -12,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,21 +33,21 @@ public class TestService {
     }
     @Transactional
     public void testAop() {
+        SubBillItem subBillItem=new SubBillItem();
+        subBillItem.setDetailNo("620012000");
+        subBillItemMapper.insert(subBillItem);
         BillItem billItem=new BillItem();
-        billItem.setBillNo("55555");
-        billItem.setBillRange("202405");
+        billItem.setBillNo("620012010");
+        billItem.setBillRange("2024-06-01 00:00:00");
+        billItem.setConfirmTime(new Date());
         billItem.setStatus(0);
         billItem.setErrorStatus(0);
         billItem.setIsDelete(0);
-        billItem.setTransactionId("0");
+        billItem.setTransactionId("1");
         billItem.setTransactionType(0);
         billItem.setChannelType(1L);
         billItemMapper.insert(billItem);
-        Bill bill=new Bill();
-        bill.setBillNo("6666");
-        bill.setChannelType(0);
-        bill.setStatus(0);
-        billMapper.insert(bill);
+        //int a=10/0;
     }
 
    /* public static void main(String[] args) {

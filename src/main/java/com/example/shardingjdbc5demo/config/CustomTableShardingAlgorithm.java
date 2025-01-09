@@ -1,5 +1,6 @@
 package com.example.shardingjdbc5demo.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.sharding.api.sharding.standard.PreciseShardingValue;
 import org.apache.shardingsphere.sharding.api.sharding.standard.RangeShardingValue;
 import org.apache.shardingsphere.sharding.api.sharding.standard.StandardShardingAlgorithm;
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Properties;
 
+@Slf4j
 public class CustomTableShardingAlgorithm implements StandardShardingAlgorithm<String> {
 
     private Properties properties=new Properties();
@@ -21,6 +23,7 @@ public class CustomTableShardingAlgorithm implements StandardShardingAlgorithm<S
         Object tableName = properties.get("tableName");
         for (String each : availableTargetNames) {
             if (each.endsWith((tableName+"_"+tableIndex))) {
+                log.info("选择的表是：{}",each);
                 return each;
             }
         }
