@@ -144,7 +144,7 @@ spring:
                 sharding-algorithm-name: sub_bill_item_standard_custom_algorithm
 
     props:
-      sql.show: true
+      sql-show: true
 
 mybatis-plus:
   mapper-locations: classpath*:/mappers/*Mapper.xml

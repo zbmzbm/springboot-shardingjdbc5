@@ -76,7 +76,7 @@ spring:
                 sharding-column: channel_type
                 sharding-algorithm-name: t_order_table_range
     props:
-      sql.show: true
+      sql-show: true
 
 mybatis-plus:
   mapper-locations: classpath*:/mappers/*Mapper.xml

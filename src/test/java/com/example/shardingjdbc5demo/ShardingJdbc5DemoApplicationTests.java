@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
-@ActiveProfiles("self")
+@ActiveProfiles("readwrite")
 class ShardingJdbc5DemoApplicationTests {
 
     @Autowired
@@ -38,6 +38,31 @@ class ShardingJdbc5DemoApplicationTests {
 
     @Autowired
     private BillItemService billItemService;
+
+    @Test
+    public void testRead(){
+        List<BillItem> byIds = billItemService.list(Wrappers.<BillItem>lambdaQuery().eq(BillItem::getBillNo,"620012010"));
+        System.out.println(byIds);
+    }
+
+    @Test
+    public void testWrite() {
+        List<BillItem> billItems=new ArrayList<BillItem>();
+        for (int i = 0; i < 4; i++) {
+            BillItem billItem=new BillItem();
+            billItem.setBillNo("33L1002"+i+"10");
+            billItem.setBillRange("2024-06-01 00:00:00");
+            billItem.setConfirmTime(new Date());
+            billItem.setStatus(0);
+            billItem.setErrorStatus(0);
+            billItem.setIsDelete(0);
+            billItem.setTransactionId("1");
+            billItem.setTransactionType(0);
+            billItem.setChannelType(1L);
+            billItems.add(billItem);
+        }
+        billItemService.saveBatch(billItems);
+    }
 
     @Test
     public void testBatchSave() {
@@ -80,20 +105,18 @@ class ShardingJdbc5DemoApplicationTests {
     }
 
     @Test
-    @Transactional
     public void setEmployeeMapper() {
         //没有进行分库分表的
         Employee employee=new Employee();
-        employee.setAge(30);
-        employee.setName("ww");
+        employee.setAge(35);
+        employee.setName("ww123");
         employeeMapper.insert(employee);
-        int a=10/0;
     }
 
     @Test
     public void getEmployeeMapper() {
         //没有进行分库分表的
-        Employee employee = employeeMapper.selectById(1);
+        Employee employee = employeeMapper.selectById(4);
         System.out.println(employee);
 
     }

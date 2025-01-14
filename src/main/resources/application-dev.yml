@@ -49,7 +49,7 @@ spring:
                 sharding-column: bill_range
                 sharding-algorithm-name: t_order_table_interval
     props:
-        sql.show: true
+      sql-show: true
 
 mybatis-plus:
   mapper-locations: classpath*:/mappers/*Mapper.xml
